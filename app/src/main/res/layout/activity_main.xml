@@ -152,6 +152,36 @@
                 app:controller_layout_id="@layout/custom_player_control"
                 app:resize_mode="fit" />
 
+            <!-- Left panel toggle handle (slide button) -->
+            <ImageView
+                android:id="@+id/btnToggleLeftPanel"
+                android:layout_width="28dp"
+                android:layout_height="64dp"
+                android:layout_gravity="start|center_vertical"
+                android:layout_marginStart="4dp"
+                android:background="@drawable/rounded_corner"
+                android:padding="2dp"
+                android:src="@drawable/ic_chevron_left"
+                android:contentDescription="Toggle Left Menu"
+                android:focusable="true"
+                android:clickable="true"
+                android:alpha="0.8" />
+
+            <!-- Right panel toggle handle (slide button) -->
+            <ImageView
+                android:id="@+id/btnToggleRightPanel"
+                android:layout_width="28dp"
+                android:layout_height="64dp"
+                android:layout_gravity="end|center_vertical"
+                android:layout_marginEnd="4dp"
+                android:background="@drawable/rounded_corner"
+                android:padding="2dp"
+                android:src="@drawable/ic_chevron_left"
+                android:contentDescription="Toggle Right Menu"
+                android:focusable="true"
+                android:clickable="true"
+                android:alpha="0.8" />
+
             <!-- Overlay Channel List (appears on overlay toggle) -->
             <FrameLayout
                 android:id="@+id/channelsOverlayLayout"

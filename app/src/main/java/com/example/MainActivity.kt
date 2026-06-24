@@ -51,6 +51,8 @@ class MainActivity : AppCompatActivity() {
     private var isFullscreen = false
     private var isMuted = false
     private var playerRetryCount = 0
+    private var isLeftPanelVisible = true
+    private var isRightPanelVisible = false
 
     private var allChannels = listOf<Channel>()
     private var allGroups = listOf<String>()
@@ -78,7 +80,7 @@ class MainActivity : AppCompatActivity() {
         groupAdapter = GroupAdapter(emptyList()) { selectedGroup, index ->
             selectGroup(selectedGroup)
             // Open the channel overlay list panel
-            findViewById<View>(R.id.channelsOverlayLayout).visibility = View.VISIBLE
+            setRightPanelVisibility(true)
         }
         rvGroups.adapter = groupAdapter
 
@@ -107,6 +109,27 @@ class MainActivity : AppCompatActivity() {
             findViewById<TextView>(R.id.tvLoadingStatus).text = getString(R.string.loading_channels)
             findViewById<TextView>(R.id.tvLoadingStatus).visibility = View.VISIBLE
             fetchPlaylistWithRetry()
+        }
+
+        // Toggle buttons click listeners
+        findViewById<View>(R.id.btnToggleLeftPanel).setOnClickListener {
+            toggleLeftPanel()
+        }
+        findViewById<View>(R.id.btnToggleRightPanel).setOnClickListener {
+            toggleRightPanel()
+        }
+
+        // Swipe Gesture Detector for the main layout and player view
+        val gestureDetector = android.view.GestureDetector(this, SwipeGestureListener())
+        val mainTouchListener = View.OnTouchListener { _, event ->
+            gestureDetector.onTouchEvent(event)
+            true
+        }
+        findViewById<View>(R.id.mainContent).setOnTouchListener(mainTouchListener)
+
+        findViewById<View>(R.id.tvPlayer).setOnTouchListener { _, event ->
+            gestureDetector.onTouchEvent(event)
+            false
         }
     }
 
@@ -563,11 +586,10 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onKeyDown(keyCode: Int, event: KeyEvent?): Boolean {
-        val overlay = findViewById<View>(R.id.channelsOverlayLayout)
         when (keyCode) {
             KeyEvent.KEYCODE_BACK -> {
-                if (overlay.visibility == View.VISIBLE) {
-                    overlay.visibility = View.GONE
+                if (isRightPanelVisible) {
+                    setRightPanelVisibility(false)
                     return true
                 } else {
                     confirmExit()
@@ -610,17 +632,15 @@ class MainActivity : AppCompatActivity() {
         newConfig: Configuration
     ) {
         super.onPictureInPictureModeChanged(isInPictureInPictureMode, newConfig)
-        val leftPanel = findViewById<View>(R.id.leftPanel)
-        val overlay = findViewById<View>(R.id.channelsOverlayLayout)
         val tvPlayer = findViewById<PlayerView>(R.id.tvPlayer)
 
         if (isInPictureInPictureMode) {
-            leftPanel.visibility = View.GONE
-            overlay.visibility = View.GONE
+            setLeftPanelVisibility(false)
+            setRightPanelVisibility(false)
             tvPlayer.useController = false
         } else {
             if (!isFullscreen) {
-                leftPanel.visibility = View.VISIBLE
+                setLeftPanelVisibility(true)
             }
             tvPlayer.useController = true
         }
@@ -640,5 +660,104 @@ class MainActivity : AppCompatActivity() {
         super.onDestroy()
         player?.release()
         player = null
+    }
+
+    private fun toggleLeftPanel() {
+        setLeftPanelVisibility(!isLeftPanelVisible)
+    }
+
+    private fun setLeftPanelVisibility(visible: Boolean) {
+        isLeftPanelVisible = visible
+        val leftPanel = findViewById<View>(R.id.leftPanel)
+        val rightPlayerArea = findViewById<View>(R.id.rightPlayerArea)
+        val btnToggleLeft = findViewById<ImageView>(R.id.btnToggleLeftPanel)
+
+        val mainContent = findViewById<ViewGroup>(R.id.mainContent)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            android.transition.TransitionManager.beginDelayedTransition(mainContent)
+        }
+
+        val params = rightPlayerArea.layoutParams as ConstraintLayout.LayoutParams
+        if (visible) {
+            leftPanel.visibility = View.VISIBLE
+            params.startToStart = ConstraintLayout.LayoutParams.UNSET
+            params.startToEnd = R.id.leftPanel
+            btnToggleLeft?.setImageResource(R.drawable.ic_chevron_left)
+        } else {
+            leftPanel.visibility = View.GONE
+            params.startToStart = ConstraintLayout.LayoutParams.PARENT_ID
+            btnToggleLeft?.setImageResource(R.drawable.ic_chevron_right)
+        }
+        rightPlayerArea.layoutParams = params
+    }
+
+    private fun toggleRightPanel() {
+        setRightPanelVisibility(!isRightPanelVisible)
+    }
+
+    private fun setRightPanelVisibility(visible: Boolean) {
+        isRightPanelVisible = visible
+        val rightOverlay = findViewById<View>(R.id.channelsOverlayLayout)
+        val btnToggleRight = findViewById<ImageView>(R.id.btnToggleRightPanel)
+
+        val mainContent = findViewById<ViewGroup>(R.id.mainContent)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            android.transition.TransitionManager.beginDelayedTransition(mainContent)
+        }
+
+        if (visible) {
+            rightOverlay.visibility = View.VISIBLE
+            btnToggleRight?.setImageResource(R.drawable.ic_chevron_right)
+        } else {
+            rightOverlay.visibility = View.GONE
+            btnToggleRight?.setImageResource(R.drawable.ic_chevron_left)
+        }
+    }
+
+    private inner class SwipeGestureListener : android.view.GestureDetector.SimpleOnGestureListener() {
+        private val SWIPE_THRESHOLD = 100
+        private val SWIPE_VELOCITY_THRESHOLD = 100
+
+        override fun onDown(e: android.view.MotionEvent): Boolean {
+            return true
+        }
+
+        override fun onFling(
+            e1: android.view.MotionEvent?,
+            e2: android.view.MotionEvent,
+            velocityX: Float,
+            velocityY: Float
+        ): Boolean {
+            if (e1 == null) return false
+            val diffX = e2.x - e1.x
+            val diffY = e2.y - e1.y
+            if (Math.abs(diffX) > Math.abs(diffY)) {
+                if (Math.abs(diffX) > SWIPE_THRESHOLD && Math.abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
+                    if (diffX > 0) {
+                        onSwipeRight()
+                    } else {
+                        onSwipeLeft()
+                    }
+                    return true
+                }
+            }
+            return false
+        }
+    }
+
+    private fun onSwipeRight() {
+        if (isRightPanelVisible) {
+            setRightPanelVisibility(false)
+        } else if (!isLeftPanelVisible) {
+            setLeftPanelVisibility(true)
+        }
+    }
+
+    private fun onSwipeLeft() {
+        if (isLeftPanelVisible) {
+            setLeftPanelVisibility(false)
+        } else if (!isRightPanelVisible) {
+            setRightPanelVisibility(true)
+        }
     }
 }
