@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="bg_main">#0F0F0F</color>
+    <color name="bg_panel">#1A1A2E</color>
+    <color name="channel_active">#2000D4FF</color>
+    <color name="text_primary">#FFFFFF</color>
+    <color name="text_secondary">#AAAAAA</color>
+    <color name="accent">#00D4FF</color>
+    <color name="badge_live">#FF0000</color>
+    <color name="badge_event">#FF6B6B</color>
+    <color name="button_bg">#00D4FF</color>
+    <color name="button_text">#000000</color>
+    <color name="divider">#444444</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+    <color name="transparent">#00000000</color>
+</resources>

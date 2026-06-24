@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="#60000000"
+    android:padding="16dp">
+
+    <!-- Pojok kiri atas: TextView nama channel (id: exo_channel_top) -->
+    <TextView
+        android:id="@+id/exo_channel_top"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentStart="true"
+        android:text="M4DI~UciH4-TV Channel"
+        android:textColor="@color/white"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        android:shadowColor="#FF000000"
+        android:shadowRadius="3"
+        android:shadowDx="1"
+        android:shadowDy="1" />
+
+    <!-- Pojok kanan atas: ImageView logo M4DI~UciH4-TV (id: exo_player_logo, 53x20dp) -->
+    <ImageView
+        android:id="@+id/exo_player_logo"
+        android:layout_width="53dp"
+        android:layout_height="20dp"
+        android:layout_alignParentTop="true"
+        android:layout_alignParentEnd="true"
+        android:src="@drawable/logo_m4di_ucih4_tv"
+        android:scaleType="fitCenter"
+        android:contentDescription="M4DI~UciH4-TV Player Logo" />
+
+    <!-- Bottom Controls Area -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:orientation="vertical">
+
+        <!-- Baris atas: kontrolTambahan (visibility=GONE for live TV) -->
+        <LinearLayout
+            android:id="@+id/kontrolTambahan"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:visibility="gone"
+            android:layout_marginBottom="8dp">
+
+            <androidx.media3.ui.DefaultTimeBar
+                android:id="@+id/exo_progress"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content" />
+        </LinearLayout>
+
+        <!-- Baris bawah: kontrolUtama (height=30dp) -->
+        <RelativeLayout
+            android:id="@+id/kontrolUtama"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:gravity="center_vertical">
+
+            <!-- KIRI: Play / Pause (visibility=GONE for live TV by default) -->
+            <ImageView
+                android:id="@+id/play_button"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentStart="true"
+                android:src="@drawable/ic_play"
+                android:visibility="gone"
+                android:contentDescription="Play" />
+
+            <ImageView
+                android:id="@+id/pause_button"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_alignParentStart="true"
+                android:src="@drawable/ic_pause"
+                android:visibility="gone"
+                android:contentDescription="Pause" />
+
+            <!-- Tengah-kiri: TextView "LIVE" dengan background merah bulat (bg_live drawable) -->
+            <TextView
+                android:id="@+id/tvLiveBadge"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_toEndOf="@id/play_button"
+                android:layout_centerVertical="true"
+                android:layout_marginStart="8dp"
+                android:background="@drawable/bg_live"
+                android:text="@string/live_badge"
+                android:textColor="@color/white"
+                android:textSize="12sp"
+                android:textStyle="bold" />
+
+            <!-- Tengah: TextView nama channel aktif -->
+            <TextView
+                android:id="@+id/exo_channel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:text="M4DI~UciH4-TV Active Channel"
+                android:textColor="@color/white"
+                android:textSize="14sp"
+                android:textStyle="bold"
+                android:ellipsize="end"
+                android:maxLines="1" />
+
+            <!-- Kanan (dari kanan ke kiri: exo_fullscreen_icon, exo_sound, exo_track_selector, exo_tg) -->
+            <LinearLayout
+                android:layout_width="wrap_content"
+                android:layout_height="30dp"
+                android:layout_alignParentEnd="true"
+                android:orientation="horizontal"
+                android:gravity="center_vertical">
+
+                <!-- 4. menu/info button (id: exo_tg) -->
+                <ImageView
+                    android:id="@+id/exo_tg"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginEnd="8dp"
+                    android:src="@drawable/ic_menu"
+                    android:contentDescription="Options"
+                    android:focusable="true"
+                    android:clickable="true"/>
+
+                <!-- 3. track/quality selector (id: exo_track_selector) -->
+                <ImageView
+                    android:id="@+id/exo_track_selector"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginEnd="8dp"
+                    android:src="@drawable/ic_track_selector"
+                    android:contentDescription="Tracks"
+                    android:focusable="true"
+                    android:clickable="true"/>
+
+                <!-- 2. mute/sound toggle (id: exo_sound) -->
+                <ImageView
+                    android:id="@+id/exo_sound"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginEnd="8dp"
+                    android:src="@drawable/ic_volume_up"
+                    android:contentDescription="Volume"
+                    android:focusable="true"
+                    android:clickable="true"/>
+
+                <!-- 1. fullscreen toggle (id: exo_fullscreen_icon) -->
+                <ImageView
+                    android:id="@+id/exo_fullscreen_icon"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:src="@drawable/ic_fullscreen"
+                    android:contentDescription="Fullscreen"
+                    android:focusable="true"
+                    android:clickable="true"/>
+
+            </LinearLayout>
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</RelativeLayout>

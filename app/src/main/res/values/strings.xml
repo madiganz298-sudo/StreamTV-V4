@@ -1,0 +1,12 @@
+<resources>
+    <string name="app_name">M4DI~UciH4-TV</string>
+    <string name="loading_channels">Memuat daftar channel...</string>
+    <string name="error_connect">Maaf, gagal terhubung ke server!</string>
+    <string name="reconnect">Reconnect</string>
+    <string name="search_hint">Cari channel...</string>
+    <string name="live_badge">LIVE</string>
+    <string name="event_badge">EVENT</string>
+    <string name="live_now_badge">LIVE NOW</string>
+    <string name="version_text">Version 1.0.0</string>
+    <string name="options_title">OPTIONS</string>
+</resources>

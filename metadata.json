@@ -1,0 +1,6 @@
+{
+  "name": "M4DI~UciH4-TV",
+  "description": "Aplikasi IPTV/Live TV Streaming M4DI~UciH4-TV.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

@@ -1,0 +1,201 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/bg_main"
+    tools:context=".MainActivity">
+
+    <!-- 1. SPLASH SCREEN (RelativeLayout) -->
+    <RelativeLayout
+        android:id="@+id/splashScreen"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="@drawable/splash_gradient"
+        android:visibility="visible">
+
+        <!-- Invisible line as vertical center spacer -->
+        <View
+            android:id="@+id/centerSpacer"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:layout_centerInParent="true"
+            android:visibility="invisible" />
+
+        <!-- Logo ImageView above center line -->
+        <ImageView
+            android:id="@+id/ivSplashLogo"
+            android:layout_width="320dp"
+            android:layout_height="120dp"
+            android:layout_above="@id/centerSpacer"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="24dp"
+            android:src="@drawable/logo_m4di_ucih4_tv"
+            android:contentDescription="M4DI~UciH4-TV Logo"
+            android:scaleType="fitCenter" />
+
+        <!-- Loading Status text below center line -->
+        <TextView
+            android:id="@+id/tvLoadingStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/centerSpacer"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="16dp"
+            android:text="@string/loading_channels"
+            android:textColor="@color/white"
+            android:textSize="18sp"
+            android:textStyle="bold" />
+
+        <!-- Error status text (visibility GONE by default) -->
+        <TextView
+            android:id="@+id/tvErrorStatus"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvLoadingStatus"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="16dp"
+            android:text="@string/error_connect"
+            android:textColor="@color/badge_live"
+            android:textSize="16sp"
+            android:visibility="gone" />
+
+        <!-- Reconnect Button (visibility GONE by default) -->
+        <Button
+            android:id="@+id/btnReconnect"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@id/tvErrorStatus"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="16dp"
+            android:text="@string/reconnect"
+            android:textColor="@color/button_text"
+            android:backgroundTint="@color/button_bg"
+            android:visibility="gone" />
+
+        <!-- Version name text at the bottom -->
+        <TextView
+            android:id="@+id/tvVersion"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_centerHorizontal="true"
+            android:layout_marginBottom="24dp"
+            android:text="@string/version_text"
+            android:textColor="@color/text_secondary"
+            android:textSize="14sp" />
+    </RelativeLayout>
+
+    <!-- 2. MAIN CONTENT (ConstraintLayout) -->
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/mainContent"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"
+        tools:visibility="visible">
+
+        <!-- KIRI (34% lebar layar) — Panel Daftar Channel -->
+        <LinearLayout
+            android:id="@+id/leftPanel"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            android:orientation="vertical"
+            android:background="@color/bg_panel"
+            android:padding="12dp"
+            app:layout_constraintHorizontal_weight="0.34"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/rightPlayerArea"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <!-- Search Bar -->
+            <EditText
+                android:id="@+id/etSearch"
+                android:layout_width="match_parent"
+                android:layout_height="48dp"
+                android:background="@drawable/rounded_corner"
+                android:hint="@string/search_hint"
+                android:textColorHint="@color/text_secondary"
+                android:textColor="@color/white"
+                android:paddingHorizontal="16dp"
+                android:inputType="text"
+                android:maxLines="1"
+                android:textSize="14sp" />
+
+            <!-- Group Categories ListView / RecyclerView -->
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/rvGroups"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="12dp"
+                android:scrollbars="vertical" />
+        </LinearLayout>
+
+        <!-- KANAN (66% lebar layar) — Video Player Area -->
+        <FrameLayout
+            android:id="@+id/rightPlayerArea"
+            android:layout_width="0dp"
+            android:layout_height="match_parent"
+            app:layout_constraintHorizontal_weight="0.66"
+            app:layout_constraintStart_toEndOf="@id/leftPanel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <!-- ExoPlayer PlayerView -->
+            <androidx.media3.ui.PlayerView
+                android:id="@+id/tvPlayer"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:use_controller="true"
+                app:controller_layout_id="@layout/custom_player_control"
+                app:resize_mode="fit" />
+
+            <!-- Overlay Channel List (appears on overlay toggle) -->
+            <FrameLayout
+                android:id="@+id/channelsOverlayLayout"
+                android:layout_width="280dp"
+                android:layout_height="match_parent"
+                android:layout_gravity="end"
+                android:background="#E0101026"
+                android:padding="12dp"
+                android:visibility="gone"
+                tools:visibility="visible">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvChannelsOverlay"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:scrollbars="vertical" />
+            </FrameLayout>
+
+            <!-- ProgressBar Loading indicator -->
+            <ProgressBar
+                android:id="@+id/pbPlayerLoading"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:layout_gravity="center"
+                android:indeterminateTint="@color/accent"
+                android:visibility="gone" />
+        </FrameLayout>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+    <!-- 3. LOCKED PANEL (RelativeLayout, visibility=GONE) — tidak dipakai, sisakan saja -->
+    <RelativeLayout
+        android:id="@+id/lockedPanel"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#CC000000"
+        android:visibility="gone" />
+
+    <!-- 4. PANEL REWARD (RelativeLayout, visibility=GONE) — tidak dipakai, sisakan saja -->
+    <RelativeLayout
+        android:id="@+id/panelReward"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#CC000000"
+        android:visibility="gone" />
+
+</FrameLayout>
